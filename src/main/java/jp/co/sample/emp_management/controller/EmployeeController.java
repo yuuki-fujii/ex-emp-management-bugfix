@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jp.co.sample.emp_management.domain.Employee;
+import jp.co.sample.emp_management.form.FindByLikeNameForm;
 import jp.co.sample.emp_management.form.UpdateEmployeeForm;
 import jp.co.sample.emp_management.service.EmployeeService;
 
@@ -48,11 +49,26 @@ public class EmployeeController {
 	 */
 	@RequestMapping("/showList")
 	public String showList(Model model) {
+		
 		List<Employee> employeeList = employeeService.showList();
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
 	}
-
+	
+	@RequestMapping("/search")
+	public String search(FindByLikeNameForm form, Model model) {
+		
+		List<Employee> employeeList = employeeService.findByLikeName(form.getName());
+		
+		if (employeeList.size() == 0) {
+			employeeList = employeeService.showList();
+			model.addAttribute("error", "1件もありませんでした");
+		}
+		
+		model.addAttribute("employeeList", employeeList);
+		return "employee/list";
+	}
+	
 	
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員詳細を表示する

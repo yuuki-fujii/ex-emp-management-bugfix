@@ -63,7 +63,13 @@
 <!-- ここから上を編集する必要はありません -->
 
 <!-- ここにモックのtable要素を貼り付けます -->
-
+				<form th:action="@{/employee/search}" method="post">
+					<span>従業員検索</span>：
+					<input type="text" name="name">
+					<button>検索</button><br>
+				</form>
+				<span th:text="${error}" style="color:orange"></span>
+				
 				<table class="table table-striped">
 					<thead>
 						<tr>

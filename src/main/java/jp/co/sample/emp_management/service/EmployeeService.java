@@ -44,6 +44,20 @@ public class EmployeeService {
 		return employee;
 	}
 	
+	
+	/**
+	 * 従業員曖昧検索.
+	 * 
+	 * @param name 検索フォームに入力された名前
+	 * @return 曖昧検索で該当した従業員データのリスト 
+	 * 		   nameが空文字の場合全件検索結果表示
+	 * 	       検索結果が0件の場合も全件検索結果表示
+	 */
+	public List <Employee> findByLikeName(String name){
+		List <Employee> employeeList = employeeRepository.findByLikeName(name);
+		return employeeList;
+	}
+	
 	/**
 	 * 従業員情報を更新します.
 	 * 
