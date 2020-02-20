@@ -80,8 +80,12 @@ public class AdministratorController {
 			return "administrator/insert";
 		}
 		
-		System.out.println(administratorRepository.findByMailAddress(form.getMailAddress()));
-		// DBを検索して、重複がある場合エラーメッセージを返す.
+		if (!(form.getPassword().equals(form.getConfirmPassword()))) {
+			result.rejectValue("confirmPassword", null , "パスワードと確認用パスワードが一致しません");
+			return "administrator/insert";
+		}
+		
+		// DBを検索して、重複がある場合エラーメッセージを返す
 		if (administratorRepository.findByMailAddress(form.getMailAddress()) != null) {
 			result.rejectValue("mailAddress", null , "このメールアドレスは既に使用されています");
 			return "administrator/insert";
