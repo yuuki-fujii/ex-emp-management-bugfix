@@ -74,20 +74,19 @@ public class AdministratorController {
 	 */
 	@RequestMapping("/insert")
 	public String insert(@Validated InsertAdministratorForm form, BindingResult result) {
+		
 		// DBを検索して、重複がある場合エラーメッセージを返す
 		if (administratorRepository.findByMailAddress(form.getMailAddress()) != null) {
 			result.rejectValue("mailAddress", null , "このメールアドレスは既に使用されています");
-			return "administrator/insert";
-		}
-		
-		// 入力値チェック
-		if(result.hasErrors()) {
-			return "administrator/insert";
 		}
 		
 		// パスワードと確認用パスワードが一致しない場合エラーメッセージを返す
 		if (!(form.getPassword().equals(form.getConfirmPassword()))) {
 			result.rejectValue("confirmPassword", null , "パスワードと確認用パスワードが一致しません");
+		}
+		
+		// 入力値チェック
+		if(result.hasErrors()) {
 			return "administrator/insert";
 		}
 		
