@@ -106,7 +106,7 @@ public class AdministratorController {
 		BeanUtils.copyProperties(form, administrator);
 		
 		// パスワードを取得
-		String password = form.getMailAddress();
+		String password = form.getPassword();
 		// パスワードをハッシュ化
 		String digest = passwordEncoder.encode(password);
 		administrator.setPassword(digest); 
@@ -134,11 +134,13 @@ public class AdministratorController {
 	 * @param form
 	 *            管理者情報用フォーム
 	 * @param result
-	 *            エラー情報格納用オブッジェクト
+	 *            エラー情報格納用オブジェクト
 	 * @return ログイン後の従業員一覧画面
 	 */
 	@RequestMapping("/login")
 	public String login(LoginForm form, BindingResult result, Model model) {
+		
+		
 		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress());
 		String digest = administrator.getPassword();
 				
