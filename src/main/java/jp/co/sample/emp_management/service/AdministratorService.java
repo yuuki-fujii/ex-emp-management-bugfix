@@ -39,4 +39,16 @@ public class AdministratorService {
 		Administrator administrator = administratorRepository.findByMailAddressAndPassward(mailAddress, passward);
 		return administrator;
 	}
+	
+	
+	/**
+	 * メールアドレスを元に管理者情報を検索.
+	 * 
+	 * @param mailAddress メールアドレス
+	 * @return 管理者情報
+	 */
+	public Administrator findByMailAddress(String mailAddress) {
+		Administrator administrator = administratorRepository.findByMailAddress(mailAddress);
+		return administrator;
+	}
 }

@@ -4,6 +4,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,7 +38,15 @@ public class AdministratorController {
 	
 	@Autowired
 	private HttpSession session;
-
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+	
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
 	 * 
@@ -93,6 +104,13 @@ public class AdministratorController {
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
 		BeanUtils.copyProperties(form, administrator);
+		
+		// パスワードを取得
+		String password = form.getMailAddress();
+		// パスワードをハッシュ化
+		String digest = passwordEncoder.encode(password);
+		administrator.setPassword(digest); 
+		
 		administratorService.insert(administrator);
 		return "redirect:/";
 	}
@@ -121,14 +139,16 @@ public class AdministratorController {
 	 */
 	@RequestMapping("/login")
 	public String login(LoginForm form, BindingResult result, Model model) {
-		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
-		if (administrator == null) {
+		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress());
+		String digest = administrator.getPassword();
+				
+		if (passwordEncoder.matches(form.getPassword(), digest)) {
+			session.setAttribute("administratorName", administrator.getName());
+			return "forward:/employee/showList";
+		} else {
 			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
 			return toLogin();
 		}
-		
-		session.setAttribute("administratorName", administrator.getName());
-		return "forward:/employee/showList";
 	}
 	
 	/////////////////////////////////////////////////////
