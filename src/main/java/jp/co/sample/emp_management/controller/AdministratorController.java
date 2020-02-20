@@ -139,18 +139,16 @@ public class AdministratorController {
 	 */
 	@RequestMapping("/login")
 	public String login(LoginForm form, BindingResult result, Model model) {
-		
-		
+		// メールアドレスから管理者オブジェクトを取得
 		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress());
-		String digest = administrator.getPassword();
-				
-		if (passwordEncoder.matches(form.getPassword(), digest)) {
-			session.setAttribute("administratorName", administrator.getName());
-			return "forward:/employee/showList";
-		} else {
+		
+		if (administrator == null || !(passwordEncoder.matches(form.getPassword(), administrator.getPassword()))) {
 			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
 			return toLogin();
 		}
+		
+		session.setAttribute("administratorName", administrator.getName());
+		return "forward:/employee/showList";
 	}
 	
 	/////////////////////////////////////////////////////
