@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jp.co.sample.emp_management.domain.Administrator;
 import jp.co.sample.emp_management.form.InsertAdministratorForm;
 import jp.co.sample.emp_management.form.LoginForm;
+import jp.co.sample.emp_management.repository.AdministratorRepository;
 import jp.co.sample.emp_management.service.AdministratorService;
 
 /**
@@ -28,6 +29,9 @@ public class AdministratorController {
 
 	@Autowired
 	private AdministratorService administratorService;
+	
+	@Autowired
+	private AdministratorRepository administratorRepository;
 	
 	@Autowired
 	private HttpSession session;
@@ -71,7 +75,15 @@ public class AdministratorController {
 	@RequestMapping("/insert")
 	public String insert(@Validated InsertAdministratorForm form, BindingResult result) {
 		
+		// 入力値チェック
 		if(result.hasErrors()) {
+			return "administrator/insert";
+		}
+		
+		System.out.println(administratorRepository.findByMailAddress(form.getMailAddress()));
+		// DBを検索して、重複がある場合エラーメッセージを返す.
+		if (administratorRepository.findByMailAddress(form.getMailAddress()) != null) {
+			result.rejectValue("mailAddress", null , "このメールアドレスは既に使用されています");
 			return "administrator/insert";
 		}
 		
