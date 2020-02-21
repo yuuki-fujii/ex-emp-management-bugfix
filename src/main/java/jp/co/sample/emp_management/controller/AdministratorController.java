@@ -4,11 +4,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,10 +39,7 @@ public class AdministratorController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	
 	
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
@@ -137,19 +131,19 @@ public class AdministratorController {
 	 *            エラー情報格納用オブジェクト
 	 * @return ログイン後の従業員一覧画面
 	 */
-	@RequestMapping("/login")
-	public String login(LoginForm form, BindingResult result, Model model) {
-		// メールアドレスから管理者オブジェクトを取得
-		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress());
-		
-		if (administrator == null || !(passwordEncoder.matches(form.getPassword(), administrator.getPassword()))) {
-			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-			return toLogin();
-		}
-		
-		session.setAttribute("administratorName", administrator.getName());
-		return "forward:/employee/showList";
-	}
+//	@RequestMapping("/login")
+//	public String login(LoginForm form, BindingResult result, Model model) {
+//		// メールアドレスから管理者オブジェクトを取得
+//		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress());
+//		
+//		if (administrator == null || !(passwordEncoder.matches(form.getPassword(), administrator.getPassword()))) {
+//			model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
+//			return toLogin();
+//		}
+//		
+//		session.setAttribute("administratorName", administrator.getName());
+//		return "forward:/employee/showList";
+//	}
 	
 	/////////////////////////////////////////////////////
 	// ユースケース：ログアウトをする
