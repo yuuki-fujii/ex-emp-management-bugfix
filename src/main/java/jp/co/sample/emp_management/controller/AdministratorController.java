@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -121,7 +122,14 @@ public class AdministratorController {
 	public String toLogin() {
 		return "administrator/login";
 	}
-
+	
+	@RequestMapping("/failure")
+	public String loginFailure(Model model) {
+		model.addAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
+		return "administrator/login";
+	}
+	
+	
 	/**
 	 * ログインします.
 	 * 

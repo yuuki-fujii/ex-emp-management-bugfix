@@ -29,13 +29,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	protected void configure (HttpSecurity http) throws Exception {
         http
         	.authorizeRequests()
-        		.antMatchers("/","/toInsert","/insert").permitAll()
+        		.antMatchers("/","/toInsert","/insert","/failure").permitAll()
         		.anyRequest().authenticated();
         
         http
         	.formLogin()
         		.loginPage("/").loginProcessingUrl("/login")
-        		.failureUrl("/?error").defaultSuccessUrl("/employee/showList", true)
+        		.failureUrl("/failure").defaultSuccessUrl("/employee/showList", true)
         		.usernameParameter("mailAddress").passwordParameter("password");
         
         
