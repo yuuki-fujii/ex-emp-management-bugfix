@@ -9,6 +9,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * spring securityを制御するクラス.
+ * 
+ * @author yuuki
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
@@ -37,7 +43,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         		.loginPage("/").loginProcessingUrl("/login")
         		.failureUrl("/failure").defaultSuccessUrl("/employee/showList", true)
         		.usernameParameter("mailAddress").passwordParameter("password");
-        
-        
+     
 	}
 }	

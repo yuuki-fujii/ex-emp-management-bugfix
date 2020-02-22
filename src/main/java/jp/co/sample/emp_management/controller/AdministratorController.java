@@ -4,7 +4,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,8 +36,7 @@ public class AdministratorController {
 	@Autowired
 	private HttpSession session;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	
 	
 	
 	
@@ -98,14 +96,7 @@ public class AdministratorController {
 		
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
-		BeanUtils.copyProperties(form, administrator);
-		
-		// パスワードを取得
-		String password = form.getPassword();
-		// パスワードをハッシュ化
-		String digest = passwordEncoder.encode(password);
-		administrator.setPassword(digest); 
-		
+		BeanUtils.copyProperties(form, administrator);		
 		administratorService.insert(administrator);
 		return "redirect:/";
 	}

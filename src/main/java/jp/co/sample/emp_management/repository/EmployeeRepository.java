@@ -85,6 +85,19 @@ public class EmployeeRepository {
 		template.update(updateSql, param);
 	}
 	
+	
+	/**
+	 * 従業員情報を登録する.
+	 * 
+	 * @param employee 登録したい従業員オブジェクト
+	 */
+	public void insert(Employee employee) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(employee);
+		String updateSql = "INSERT INTO employees (id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count) "+
+							"VALUES ((SELECT max(id)+1 FROM employees),:name,:image,:gender,:hireDate,:mailAddress,:zipCode,:address,:telephone,:salary,:characteristics,:dependentsCount) ";
+		template.update(updateSql, param);
+	}
+	
 	/**
 	 * 従業員曖昧検索.
 	 * 

@@ -66,4 +66,13 @@ public class EmployeeService {
 	public void update(Employee employee) {
 		employeeRepository.update(employee);
 	}
+	
+	/**
+	 * 従業員情報を登録する.
+	 * 
+	 * @param employee 登録したい従業員オブジェクト
+	 */
+	public void insert(Employee employee) {
+		employeeRepository.insert(employee);
+	}
 }

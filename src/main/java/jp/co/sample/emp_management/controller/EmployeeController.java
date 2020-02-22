@@ -1,9 +1,12 @@
 package jp.co.sample.emp_management.controller;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jp.co.sample.emp_management.domain.Employee;
 import jp.co.sample.emp_management.domain.LoginUser;
 import jp.co.sample.emp_management.form.FindByLikeNameForm;
+import jp.co.sample.emp_management.form.InsertEmployeeForm;
 import jp.co.sample.emp_management.form.UpdateEmployeeForm;
 import jp.co.sample.emp_management.service.EmployeeService;
 
@@ -65,6 +69,7 @@ public class EmployeeController {
 		return "employee/list";
 	}
 	
+	
 	@RequestMapping("/search")
 	public String search(FindByLikeNameForm form, Model model) {
 		
@@ -96,6 +101,36 @@ public class EmployeeController {
 		model.addAttribute("employee", employee);
 		return "employee/detail";
 	}
+	
+	
+	/**
+	 * 従業員登録ページに遷移.
+	 * 
+	 * @return 従業員登録ページ
+	 */
+	@RequestMapping("/to_insert")
+	public String toInsert() {
+		return "employee/insert";
+	}
+	
+	@RequestMapping("/insert")
+	public String insert(@Validated InsertEmployeeForm form, BindingResult result) {
+		Employee employee = new Employee();
+		BeanUtils.copyProperties(form, employee);
+		employee.setSalary(form.getIntSalary());
+		employee.setDependentsCount(form.getIntDependentsCount());
+		
+		try {
+			Date hireDate = form.getHireDate();
+			employee.setHireDate(hireDate);
+		} catch (ParseException e) {
+			result.rejectValue("hireDate", null, "入社日が不正な値です");
+		}
+		
+		employeeService.insert(employee);
+		return "redirect:/employee/showList";
+	}
+	
 	
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員詳細を更新する
