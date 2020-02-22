@@ -1,7 +1,8 @@
 package jp.co.sample.emp_management.controller;
 
-import java.text.ParseException;
-import java.util.Date;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.sample.emp_management.domain.Employee;
 import jp.co.sample.emp_management.domain.LoginUser;
@@ -48,7 +50,18 @@ public class EmployeeController {
 	public UpdateEmployeeForm setUpForm() {
 		return new UpdateEmployeeForm();
 	}
-
+	
+	/**
+	 * 従業員登録フォームをリクエストスコープに格納する.
+	 * 
+	 * @return 従業員登録フォーム
+	 */
+	@ModelAttribute
+	public InsertEmployeeForm setUpInsertEmployeeForm() {
+		return new InsertEmployeeForm();
+	}
+	
+	
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員一覧を表示する
 	/////////////////////////////////////////////////////
@@ -114,21 +127,66 @@ public class EmployeeController {
 	}
 	
 	@RequestMapping("/insert")
-	public String insert(@Validated InsertEmployeeForm form, BindingResult result) {
-		Employee employee = new Employee();
-		BeanUtils.copyProperties(form, employee);
-		employee.setSalary(form.getIntSalary());
-		employee.setDependentsCount(form.getIntDependentsCount());
+	public String insert(@Validated InsertEmployeeForm form, BindingResult result) throws IOException {
 		
+		// 画像ファイル形式チェック
+		MultipartFile imageFile = form.getImageFile();
+		String fileExtension = null;
 		try {
-			Date hireDate = form.getHireDate();
-			employee.setHireDate(hireDate);
-		} catch (ParseException e) {
-			result.rejectValue("hireDate", null, "入社日が不正な値です");
+			fileExtension = getExtension(imageFile.getOriginalFilename());
+			
+			if (!"jpg".equals(fileExtension) && !"png".equals(fileExtension)) {
+				result.rejectValue("imageFile", "", "拡張子は.jpgか.pngのみに対応しています");
+			}
+		} catch (Exception e) {
+			result.rejectValue("imageFile", "", "拡張子は.jpgか.pngのみに対応しています");
 		}
 		
+		// 1つでもエラーがあれば入力画面へ戻りエラーメッセージを出す
+		if (result.hasErrors()) {
+			return toInsert();
+		}
+		
+		// 従業員情報を作成
+		Employee employee = new Employee();
+		// copyPropertiesはgetterが使われている
+		BeanUtils.copyProperties(form, employee);
+		
+		// 画像ファイルをBase64形式にエンコード
+		
+		String base64FileString = Base64.getEncoder().encodeToString(imageFile.getBytes());
+		if ("jpg".equals(fileExtension)) {
+			base64FileString = "data:image/jpeg;base64," + base64FileString;
+		} else if ("png".equals(fileExtension)) {
+			base64FileString = "data:image/png;base64," + base64FileString;
+		}
+		employee.setImage(base64FileString);
+		
+		// DBインサート
 		employeeService.insert(employee);
+		
+		// DBの更新処理なのでリダイレクト
 		return "redirect:/employee/showList";
+	}
+	
+	
+	/**
+	 * ファイル名から拡張子を返す.
+	 * 
+	 * @param originalFileName ファイル名
+	 * 
+	 * @return .を除いたファイルの拡張子
+	 */
+	private String getExtension(String originalFileName) throws Exception {
+		if (originalFileName == null) {
+			throw new FileNotFoundException();
+		}
+		
+		int point = originalFileName.lastIndexOf(".");
+		if (point == -1) {
+			throw new FileNotFoundException();
+		}
+		return originalFileName.substring(point + 1);
 	}
 	
 	

@@ -68,7 +68,7 @@
 
 <!-- ここにモックのform要素を貼り付けます -->
 
-					<form method="post" action="insert.html" th:action="@{/employee/insert}">
+					<form method="post" action="insert.html" th:action="@{/employee/insert}"  th:object="${insertEmployeeForm}" enctype="multipart/form-data">
 						<fieldset>
 							<legend>従業員情報</legend>
 							<table class="table table-striped">
@@ -77,7 +77,11 @@
 							      従業員名
 							    </th>
 							    <td>
-							     <input type="text" name="name">
+							    	<label th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-messages">
+										従業員名を入力してください
+									</label>
+							     	<input type="text" name="name" id="name" class="form-control" placeholder="山田太郎"
+										 th:field="*{name}" th:errorclass="error-input" value="山田太郎">
 							    </td>
 							  </tr>
 							  <tr>
@@ -85,7 +89,10 @@
 							      写真
 							    </th>
 							    <td>
-							      <input type="text" name="image">
+							     	<label th:if="${#fields.hasErrors('imageFile')}" th:errors="*{imageFile}" class="error-messages">
+										写真を選択してください
+									</label>
+							      	<input type="file" name="imageFile" accept=".jpg,.png,image/jpeg,image/png" th:errorclass="error-input">
 							    </td>
 							  </tr>
 							  <tr>
@@ -93,6 +100,9 @@
 							      性別
 							    </th>
 							    <td>
+							      <label th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="error-messages">
+										性別を選択してください
+								  </label>
 							      <input type="radio" name="gender" value="男性" checked>男性&nbsp;&nbsp;&nbsp;
 							      <input type="radio" name="gender" value="女性">女性
 							    </td>
@@ -102,7 +112,11 @@
 							      入社日
 							    </th>
 							    <td>
-							      <input type="date" name="hireDateString">
+							      <label th:if="${#fields.hasErrors('hireDateString')}" th:errors="*{hireDateString}" class="error-messages">
+										入社日を入力してください
+								  </label>
+							      <input type="date" name="hireDateString" id="hireDateString" class="form-control" placeholder="1979-7-27"
+										 th:field="*{hireDateString}" th:errorclass="error-input">
 							    </td>
 							  </tr>
 							  <tr>
@@ -110,7 +124,11 @@
 							      メールアドレス
 							    </th>
 							    <td>
-							      <input type="email" name="mailAddress">
+							    	<label th:if="${#fields.hasErrors('mailAddress')}" th:errors="*{mailAddress}" class="error-messages">
+										メールアドレスを入力してください
+									</label>
+							        <input type="text" name="mailAddress" id="mailAddress" class="form-control" placeholder="yamada@mail.com"
+										 th:field="*{mailAddress}" th:errorclass="error-input" value="yamada@mail.com">
 							    </td>
 							  </tr>
 							  <tr>
@@ -118,7 +136,16 @@
 							      郵便番号
 							    </th>
 							    <td>
-							     <input type="text" name="zipCode">
+							    	<label th:if="${#fields.hasErrors('zipCode')}" th:errors="*{zipCode}" class="error-messages">
+										郵便番号を入力してください
+									</label>
+									<div class="input-group">
+										<input type="text" name="zipCode" id="zipCode" class="form-control" placeholder="111-1111" size="7"
+										 th:field="*{zipCode}" th:errorclass="error-input">
+										<span class="input-group-btn">
+										    <button id="search" type="button" class="btn btn-primary">住所検索</button>
+										</span>
+									</div>
 							    </td>
 							  </tr>
 							  <tr>
@@ -126,7 +153,11 @@
 							      住所
 							    </th>
 							    <td>
-							      <input type="text" name="address">
+							      	 <label th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error-messages">
+										住所を入力してください
+									 </label>
+									 <input type="text" name="address" id="address" class="form-control" placeholder="東京都新宿区新宿１−１−１"
+										 th:field="*{address}" th:errorclass="error-input" value="東京都新宿区新宿１−１−１">
 							    </td>
 							  </tr>
 							  <tr>
@@ -134,7 +165,11 @@
 							      電話番号
 							    </th>
 							    <td>
-							      <input type="text" name="telephone">
+							        <label th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}" class="error-messages">
+										電話番号を入力してください
+									</label>
+									<input type="text" name="telephone" id="telephone" class="form-control" placeholder="000-0000-0000"
+										 th:field="*{telephone}" th:errorclass="error-input" value="000-0000-0000">
 							    </td>
 							  </tr>
 							  <tr>
@@ -142,7 +177,11 @@
 							      給料
 							    </th>
 							    <td>
-								  <input type="text" name="salary">
+								  	<label th:if="${#fields.hasErrors('salaryString')}" th:errors="*{salaryString}" class="error-messages">
+										給料を入力してください
+									</label>
+									<input type="text" name="salaryString" id="salaryString" class="form-control" placeholder="200,000"
+										 th:field="*{salaryString}" th:errorclass="error-input" value="200,000">
 							    </td>
 							  </tr>
 							  <tr>
@@ -150,7 +189,12 @@
 							      特性
 							    </th>
 							    <td>
-							      <textarea name="characteristics"  cols="40" rows="3"></textarea>
+							      		<label th:if="${#fields.hasErrors('characteristics')}" th:errors="*{characteristics}" class="error-messages">
+											特性を入力してください
+										</label>
+										<textarea name="characteristics" th:field="*{characteristics}" th:errorclass="error-input" class="form-control"
+											rows="5" cols="40">明るく素直な性格です。リーダーシップを発揮します。新卒社員研修の時はグループ開発の時にリーダーを買ってでました。積極性も人間性も抜群です。周りに対する不満も聞いたことがありません。
+										</textarea>
 							    </td>
 							  </tr>
 							  <tr>
@@ -158,7 +202,10 @@
 							      扶養人数
 							    </th>
 							    <td>
-							      <input type="text" name="dependentsCount">
+							    	<label th:if="${#fields.hasErrors('dependentsCountString')}" th:errors="*{dependentsCountString}" class="error-messages">
+										扶養人数を入力してください
+									</label>
+							      <input type="text" name="dependentsCountString">
 							    </td>
 							  </tr>
 							</table>
