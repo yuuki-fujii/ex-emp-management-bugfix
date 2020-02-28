@@ -1,8 +1,12 @@
 package jp.co.sample.emp_management.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +80,39 @@ public class EmployeeService {
 		employeeRepository.insert(employee);
 	}
 	
+	public Page<Employee> showListPaging(int page, int size, List<Employee> employeeList){
+		// 表示させたいページを-1しなければうまく動かない
+		page--;
+		// どの従業員から表示するかというカウント値
+		int startItemCount = page * size;
+		// 絞りこんだ後の従業員リストが入る変数
+		List<Employee> list;
+		
+		if (employeeList.size() < startItemCount) {
+			list = Collections.emptyList();
+		} else {
+			//　該当ページに表示させる従業員一覧を作成
+			int toIndex = Math.min(startItemCount + size , employeeList.size() );
+			list = employeeList.subList(startItemCount, toIndex);
+		}
+		
+		// 上記で作成した該当ページに表示させる従業員一覧をページングできる形に変換して返す
+		Page<Employee> employeePage
+			= new PageImpl<Employee>(list,PageRequest.of(page, size),employeeList.size());
+		return employeePage;
+	}
 	
+	
+	
+	
+	
+	
+	/**
+	 * オートコンプリート用にJavaScriptの配列の中身を文字列で作ります.
+	 * 
+	 * @param employeeList 従業員一覧
+	 * @return オートコンプリート用JavaScriptの配列の文字列
+	 */
 	public StringBuilder getEmployeeListForAutocomplete(List<Employee> employeeList) {
 		StringBuilder employeeListForAutocomplete = new StringBuilder();
 		for (int i = 0; i < employeeList.size(); i++) {
