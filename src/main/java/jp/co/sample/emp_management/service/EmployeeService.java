@@ -75,4 +75,19 @@ public class EmployeeService {
 	public void insert(Employee employee) {
 		employeeRepository.insert(employee);
 	}
+	
+	
+	public StringBuilder getEmployeeListForAutocomplete(List<Employee> employeeList) {
+		StringBuilder employeeListForAutocomplete = new StringBuilder();
+		for (int i = 0; i < employeeList.size(); i++) {
+			if (i != 0) {
+				employeeListForAutocomplete.append(",");
+			}
+			Employee employee = employeeList.get(i);
+			employeeListForAutocomplete.append("\"");
+			employeeListForAutocomplete.append(employee.getName());
+			employeeListForAutocomplete.append("\"");
+		}
+		return employeeListForAutocomplete;
+	}
 }

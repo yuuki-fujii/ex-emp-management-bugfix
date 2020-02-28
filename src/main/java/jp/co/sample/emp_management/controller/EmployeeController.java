@@ -79,6 +79,11 @@ public class EmployeeController {
 		List<Employee> employeeList = employeeService.showList();
 		model.addAttribute("employeeList", employeeList);
 		session.setAttribute("administratorName", administratorName);
+		
+		// オートコンプリート用にJavaScript配列の中身を文字列で作ってスコープへ格納
+		StringBuilder employeeListForAutocomplete = employeeService.getEmployeeListForAutocomplete(employeeList);
+		model.addAttribute("employeeListForAutocomplete", employeeListForAutocomplete);
+		
 		return "employee/list";
 	}
 	
