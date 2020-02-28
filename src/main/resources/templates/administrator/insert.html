@@ -89,6 +89,7 @@
 										<label th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="error-messages">
 											確認用パスワードを入力してください
 										</label>
+										<span  id="confirmMessage" style="color:red"></span>
 										<input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="confirmPassword"
 											 th:field="*{confirmPassword}" th:errorclass="error-input" >
 									</div>
@@ -113,8 +114,8 @@
 		</div>
 	</div>
 	<!-- end container -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/password_check.js"></script>
 </body>
 </html>
